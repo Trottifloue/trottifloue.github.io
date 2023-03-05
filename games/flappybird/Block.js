@@ -10,7 +10,7 @@ class Block{
       Block.timerRunned = 0
       Block.targetedTime = Math.random()
 
-      //new Block({x:Engine.engine.canvas.width-1, y:Math.random()*Engine.engine.canvas.height-30})
+      new Block({x:Engine.engine.canvas.width-1, y:Math.random()*Engine.engine.canvas.height-30})
       
     }
   }

@@ -68,7 +68,6 @@ class Engine{
     }
   
     Engine.engine.player = new Player(drawPlayer, 150,150, 800, 1800, true)
-    new Block({x:Engine.engine.canvas.width-1, y: 90})
     Engine.engine.gameLoop(performance.now())
   }
 
