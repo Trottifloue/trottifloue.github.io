@@ -7,6 +7,11 @@ class Player{
   doMove = null
   jumpSpeed = -400
   friction = 80
+
+  dimension = {
+    x: 10,
+    y:10
+  }
   
 
 
@@ -49,6 +54,22 @@ class Player{
     this.maxSpeed = maxSpeed
     this.acceleration = acceleration
     this.doMove = doMove
+  }
+
+  detectCollision(){
+    let blocks = Engine.engine.blocks
+
+    for(let i = 0; i<blocks.length; i++){
+      let block = blocks[i]
+
+      let isAllignedYAxis = (block.location.y + block.dimension.y>this.location.y) && (this.location.y+this.dimension.y>block.location.y)
+      let isAllignedXAxis = (block.location.x + block.dimension.x>this.location.x) && (this.location.x+this.dimension.x>block.location.x)
+      if(isAllignedXAxis && isAllignedYAxis ){
+
+        return true
+      }
+    }
+    return false
   }
 
 }

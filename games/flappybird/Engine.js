@@ -4,6 +4,8 @@ class Engine{
 
   canvas
   ctx
+  isGameRunning = true
+
   character
   blocks = []
   
@@ -15,8 +17,14 @@ class Engine{
   gravity = 400
 
   gameLoop(actualTime){
+
+    if(Engine.engine.isGameRunning){
     requestAnimationFrame(Engine.engine.gameLoop)
-  
+    }else{
+      Engine.engine.gameOver()
+      return
+    }
+    
     Engine.engine.oldTime = Engine.engine.newTime
     Engine.engine.newTime  = actualTime
 
@@ -44,6 +52,10 @@ class Engine{
     }
 
     Block.spawn(Engine.engine.delta)
+
+    if(Engine.engine.player.detectCollision()){
+      Engine.engine.isGameRunning = false
+    }
   }
   
   play(){
@@ -52,18 +64,36 @@ class Engine{
   
     let drawPlayer = function(){
       Engine.engine.ctx.fillStyle = 'green'
-      Engine.engine.ctx.fillRect(this.location.x, this.location.y, 10, 10)
+      Engine.engine.ctx.fillRect(this.location.x, this.location.y, this.dimension.x, this.dimension.y)
     }
   
     Engine.engine.player = new Player(drawPlayer, 150,150, 800, 1800, true)
-  
+    new Block({x:Engine.engine.canvas.width-1, y: 90})
     Engine.engine.gameLoop(performance.now())
   }
+
+  gameOver(){
+
+    let ctx = Engine.engine.ctx
+    ctx.font = "48px serif";
+    ctx.fillStyle = "black"
+    ctx.fillText("Game Over, retry ?", 300, 300)
+
+    let button = Engine.engine.canvas.parentNode.appendChild(document.createElement('button'))
+    button.innerText = "retry"
+    button.id= "button"
+    button.addEventListener("click", function(){
+      console.log("test")
+      Engine.createEngine()
+    })
+  }
+
 
   static createEngine(){
     Engine.engine = new Engine()
 
     document.getElementById("button").remove()
+
 
     Engine.engine.play()
   }
