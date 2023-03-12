@@ -73,13 +73,9 @@ class Engine{
 
   gameOver(){
 
-    let ctx = Engine.engine.ctx
-    ctx.font = "48px serif";
-    ctx.fillStyle = "black"
-    ctx.fillText("Game Over, retry ?", 300, 300)
-
     let button = Engine.engine.canvas.parentNode.appendChild(document.createElement('button'))
-    button.innerText = "retry"
+    button.classList.add("button")
+    button.innerHTML = `Game over,<br>retry ?`
     button.id= "button"
     button.addEventListener("click", function(){
       console.log("test")
@@ -87,6 +83,15 @@ class Engine{
     })
   }
 
+  doSquareCollide(a, b){
+
+    let isAllignedYAxis = (a.location.y + a.dimension.y>b.location.y) && (b.location.y+b.dimension.y>a.location.y)
+    let isAllignedXAxis = (a.location.x + a.dimension.x>b.location.x) && (b.location.x+b.dimension.x>a.location.x)
+    if(isAllignedXAxis && isAllignedYAxis){
+      return true
+    }
+    return false  
+  }
 
   static createEngine(){
     Engine.engine = new Engine()
@@ -96,6 +101,7 @@ class Engine{
 
     Engine.engine.play()
   }
+
 
 
 

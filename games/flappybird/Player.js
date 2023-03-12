@@ -34,13 +34,25 @@ class Player{
     this.location.x += this.velocity.x*delta
 
     this.velocity.y += Engine.engine.gravity*delta
-    if(Input.inputList.Space == 1){
+    if(Input.inputList.Space == 1 && !(this.location.y < 60) ){
       this.velocity.y = this.jumpSpeed
     }
   
     this.location.y += this.velocity.y*delta
 
-    
+    let canvas = Engine.engine.canvas
+
+    if(this.location.x < 0 || this.location.x + this.dimension.x > canvas.width){
+      this.velocity.x *=-1
+      this.velocity.x += Math.sign(this.velocity.x)*40
+    }
+
+    if(this.location.y < 0){
+      this.velocity.y = Math.abs(this.velocity.y)
+    }else if( this.location.y + this.dimension.y > canvas.height){
+      this.velocity.y = this.jumpSpeed
+      //this.velocity.y *= -1
+    }
   }
 
   draw(){
@@ -62,14 +74,12 @@ class Player{
     for(let i = 0; i<blocks.length; i++){
       let block = blocks[i]
 
-      let isAllignedYAxis = (block.location.y + block.dimension.y>this.location.y) && (this.location.y+this.dimension.y>block.location.y)
-      let isAllignedXAxis = (block.location.x + block.dimension.x>this.location.x) && (this.location.x+this.dimension.x>block.location.x)
-      if(isAllignedXAxis && isAllignedYAxis ){
-
+      let doCollide = Engine.engine.doSquareCollide(this, block)
+      if(doCollide){
         return true
       }
+    
     }
     return false
   }
-
 }

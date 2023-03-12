@@ -5,15 +5,51 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
+  <style>
+
+    *{
+      box-sizing: border-box;
+    }
+
+    .canvas{
+      position:absolute;
+    }
+
+    .canvas-div{
+      display: inline-block;
+      position: relative;
+      width: 900px;
+      height: 900px;
+      left: 50%;
+      transform: translate(-50%);
+    }
+
+    .button{
+      position:absolute;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      top: 50%;
+
+      text-align: center;
+      font-size: 48px;
+    }
+  </style>
 </head>
 <body>
-  <canvas width="900" height="900" id="canvas"></canvas>
   <script src="Input.js"></script>
   <script src="Player.js"></script>
   <script src="Block.js"></script>
-
+    <script src="CosBlock.js"></script>
+  
   <script src="Engine.js"></script>
-
-  <button id="button" onclick="Engine.createEngine()">play</button>
+  <div width="900" height="900" class="canvas-div">
+    <canvas class="canvas" width="900" height="900" id="canvas"></canvas>
+    <button class="button" id="button" onclick="Engine.createEngine()">Play</button>
+  </div>
 </body>
 </html>
