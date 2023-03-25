@@ -8,7 +8,7 @@ class CosBlock extends Block{
     }
   }
 
-  move(){
+  update(){
 
     const variationSpeed = 10
     const amplitude = 30
@@ -27,9 +27,6 @@ class CosBlock extends Block{
     let newCosX = Math.cos(Math.abs((this.origin.y - newLocation.y)/variationSpeed))
     newLocation.x += (newCosX - actualCosX) * this.direction.y *amplitude
 
-    
-    
-    console.log((this.location.x-newLocation))
     this.location.x = newLocation.x
     this.location.y = newLocation.y
     

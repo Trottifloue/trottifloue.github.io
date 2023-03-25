@@ -15,7 +15,7 @@ class Player{
   
 
 
-  move(){
+  update(){
   let delta = Engine.engine.delta    
   let a = Input.inputList.KeyA? Input.inputList.KeyA : 0
   let d = Input.inputList.KeyD? Input.inputList.KeyD : 0
@@ -53,6 +53,10 @@ class Player{
       this.velocity.y = this.jumpSpeed
       //this.velocity.y *= -1
     }
+
+    if(this.detectCollision()){
+      Engine.engine.isGameRunning = false
+    }
   }
 
   draw(){
@@ -69,7 +73,7 @@ class Player{
   }
 
   detectCollision(){
-    let blocks = Engine.engine.blocks
+    let blocks = Engine.engine.entities
 
     for(let i = 0; i<blocks.length; i++){
       let block = blocks[i]

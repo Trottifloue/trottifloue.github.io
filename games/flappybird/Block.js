@@ -40,6 +40,11 @@ class Block{
       Block.targetedTime = Math.random()
       let location
       let randDirection = Math.floor(Math.random()*4)
+      let spawnerLocation = {
+        x : null,
+        y : null
+      }
+      let simulate
 
       if(randDirection == 0){
         
@@ -48,18 +53,31 @@ class Block{
             y : Math.random()*Engine.engine.canvas.height-Block.dimension.y,
             x : Engine.engine.canvas.width-1
           }
+
+          simulate = CosBlock.SimulateDImension(direction.Left)
+          spawnerLocation = {
+            x : location.x - simulate.x*direction.Right.x,
+            y : location.y - simulate.y*direction.Right.y
+          }
         }while(Block.doWillCollide(location, false))
-        new CosBlock(location, direction.Right)
+        new Spawner(CosBlock, spawnerLocation, 3, simulate, location, direction.Right)
+    
         
       }else if(randDirection == 1){
         
         do{
           location = {
             y : Math.random()*Engine.engine.canvas.height-Block.dimension.y,
-            x : 0
+            x : 0-Block.dimension.x
+          }
+
+          simulate = CosBlock.SimulateDImension(direction.Left)
+          spawnerLocation = {
+            x : location.x - simulate.x*direction.Left.x,
+            y : location.y - simulate.y*direction.Left.y
           }
         }while(Block.doWillCollide(location, false))
-        new CosBlock(location, direction.Left)
+        new Spawner(CosBlock, spawnerLocation, 3, simulate, location, direction.Left)
         
       }else if(randDirection == 2){
         
@@ -68,26 +86,37 @@ class Block{
             x : Math.random()*Engine.engine.canvas.width-Block.dimension.y,
             y : Engine.engine.canvas.height-1
           }
+
+          simulate = CosBlock.SimulateDImension(direction.Up)
+          spawnerLocation = {
+            x : location.x - simulate.x*direction.Up.x,
+            y : location.y - simulate.y*direction.Up.y
+          }
         }while(Block.doWillCollide(location, true))
-        new CosBlock(location, direction.Up)
+        new Spawner(CosBlock, spawnerLocation, 3, simulate, location, direction.Up)
         
       }else if(randDirection == 3){
         
         do{
           location = {
             x : Math.random()*Engine.engine.canvas.width-Block.dimension.y,
-            y : 0
+            y : 0- Block.dimension.x
+          }
+
+          simulate = CosBlock.SimulateDImension(direction.Down)
+          spawnerLocation = {
+            x : location.x - simulate.x*direction.Down.x,
+            y : location.y - simulate.y*direction.Down.y
           }
         }while(Block.doWillCollide(location, true))
-        new CosBlock(location, direction.Down)
-        
-      }
+          new Spawner(CosBlock, spawnerLocation, 3, simulate, location, direction.Down)
+        }
 
     }
   }
 
   static doWillCollide(location, inverted){
-    let blocks = Engine.engine.blocks
+    let entities = Engine.engine.entities
     let dimension
     
     if(inverted){
@@ -101,8 +130,8 @@ class Block{
       dimension : dimension,
       location : location
     }
-    for(let i = 0; i<blocks.length;i++){
-      if(Engine.engine.doSquareCollide(futureObject, blocks[i])){
+    for(let i = 0; i<entities.length;i++){
+      if(Engine.engine.doSquareCollide(futureObject, entities[i])){
         return true
       }
     }
@@ -115,7 +144,7 @@ class Block{
     Engine.engine.ctx.fillRect(this.location.x, this.location.y, this.dimension.x, this.dimension.y)
   }
 
-  move(){
+  update(){
     let delta = Engine.engine.delta
     this.location.x += this.velocity.x*delta
     this.location.y += this.velocity.y*delta
@@ -124,13 +153,36 @@ class Block{
   }
 
   tryToDelete(){
-    if(this.location.x+this.dimension.x<0 || this.location.x>Engine.engine.canvas.width){
-      let index = Engine.engine.blocks.indexOf(this)
-      Engine.engine.blocks.splice(index, 1)
+
+    let axis = ["x", "y"]
+    let word = ["width", "height"]
+    for(let i =0; i<axis.length; i++){
+      if(this.direction[axis[i]] == -1 && this.location[axis[i]] + this.dimension[axis[i]]<0){
+        let index = Engine.engine.entities.indexOf(this)
+        Engine.engine.entities.splice(index, 1)
+        return
+      }else if(this.direction[axis[i]] == 1 && this.location[axis[i]]>Engine.engine.canvas[word[i]]){
+        let index = Engine.engine.entities.indexOf(this)
+        Engine.engine.entities.splice(index, 1)
+        return
+      }
     }
   }
   
   color = "red"
+
+  static SimulateDImension(vectorDirection){
+    let dimension = {}
+    if(vectorDirection.y !==0){
+      dimension.x = Block.dimension.y,
+      dimension.y = Block.dimension.x
+    }else{
+      dimension.x = Block.dimension.x,
+      dimension.y = Block.dimension.y
+    }
+
+    return dimension
+  }
 
   constructor(location, vectorDirection){
     this.direction = vectorDirection
@@ -147,7 +199,7 @@ class Block{
       this.dimension.x = Block.dimension.x,
       this.dimension.y = Block.dimension.y
     }
-    Engine.engine.blocks.push(this)
+    Engine.engine.entities.push(this)
 
   }
 }

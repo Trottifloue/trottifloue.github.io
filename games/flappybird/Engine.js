@@ -7,7 +7,8 @@ class Engine{
   isGameRunning = true
 
   character
-  blocks = []
+  entities = []
+  noCollision = []
   
 
   oldTime = 0
@@ -38,23 +39,27 @@ class Engine{
     Engine.engine.ctx.clearRect(0,0,canvas.width, canvas.height)
     Engine.engine.player.draw()
 
-    for(let i = 0; i<Engine.engine.blocks.length; i++){
-      Engine.engine.blocks[i].draw()
+    for(let i = 0; i<Engine.engine.entities.length; i++){
+      Engine.engine.entities[i].draw()
+    }
+
+    for(let i = 0; i<Engine.engine.noCollision.length; i++){
+      Engine.engine.noCollision[i].draw()
     }
   
   }
   
   tick(){
-    Engine.engine.player.move()
+    Engine.engine.player.update()
 
-    for(let i = Engine.engine.blocks.length-1; i>=0; i--){
-      Engine.engine.blocks[i].move()
+    for(let i = Engine.engine.entities.length-1; i>=0; i--){
+      Engine.engine.entities[i].update()
     }
 
     Block.spawn(Engine.engine.delta)
 
-    if(Engine.engine.player.detectCollision()){
-      Engine.engine.isGameRunning = false
+    for(let i = Engine.engine.noCollision.length-1; i>=0; i--){
+      Engine.engine.noCollision[i].update()
     }
   }
   
@@ -72,13 +77,11 @@ class Engine{
   }
 
   gameOver(){
-
     let button = Engine.engine.canvas.parentNode.appendChild(document.createElement('button'))
     button.classList.add("button")
     button.innerHTML = `Game over,<br>retry ?`
     button.id= "button"
     button.addEventListener("click", function(){
-      console.log("test")
       Engine.createEngine()
     })
   }
@@ -96,14 +99,11 @@ class Engine{
   static createEngine(){
     Engine.engine = new Engine()
 
-    document.getElementById("button").remove()
+    document.getElementById("button")?.remove()
 
 
     Engine.engine.play()
   }
-
-
-
 
   constructor(){
     this.oldTime = performance.now()

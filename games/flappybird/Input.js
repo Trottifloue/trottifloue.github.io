@@ -5,8 +5,11 @@ let Input = {
   },
 
   keydown : function(e){
-    
+
     Input.inputList[e.code] = 1
+    if(e.code == "Space" && !(Engine.engine?.isGameRunning == true)){
+      Engine.createEngine()
+    }
   },
 
   inputList : {
