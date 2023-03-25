@@ -51,7 +51,7 @@ class Block{
         do{
           location = {
             y : Math.random()*Engine.engine.canvas.height-Block.dimension.y,
-            x : Engine.engine.canvas.width-1
+            x : Engine.engine.canvas.width
           }
 
           simulate = CosBlock.SimulateDImension(direction.Left)
@@ -84,7 +84,7 @@ class Block{
         do{
           location = {
             x : Math.random()*Engine.engine.canvas.width-Block.dimension.y,
-            y : Engine.engine.canvas.height-1
+            y : Engine.engine.canvas.height
           }
 
           simulate = CosBlock.SimulateDImension(direction.Up)

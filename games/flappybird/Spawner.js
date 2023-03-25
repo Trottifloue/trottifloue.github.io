@@ -3,7 +3,7 @@ class Spawner{
     location
     timeElapsed = 0
     totalTime
-    blinkingSpeed = 0.333
+    blinkingSpeed = 10
 
     dimension = {
       x:60,
