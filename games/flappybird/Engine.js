@@ -1,5 +1,3 @@
-
-
 class Engine{
 
   canvas
@@ -8,7 +6,6 @@ class Engine{
 
   character
   entities = []
-  noCollision = []
   
 
   oldTime = 0
@@ -43,9 +40,7 @@ class Engine{
       Engine.engine.entities[i].draw()
     }
 
-    for(let i = 0; i<Engine.engine.noCollision.length; i++){
-      Engine.engine.noCollision[i].draw()
-    }
+
   
   }
   
@@ -58,9 +53,8 @@ class Engine{
 
     Block.spawn(Engine.engine.delta)
 
-    for(let i = Engine.engine.noCollision.length-1; i>=0; i--){
-      Engine.engine.noCollision[i].update()
-    }
+    Engine.engine.handleCollision()
+
   }
   
   play(){
@@ -96,6 +90,79 @@ class Engine{
     return false  
   }
 
+  doCircleCollide(a, b){
+
+    let distancePow = Math.pythagor(a.location, b.location)
+    let radius = Math.pow(a.radius+b.radius ,2)
+    if(distancePow>radius){
+      return false
+    }
+    return true
+  }
+
+  doRectAndCircleCollide(square, circle){
+    
+    if(circle.location.x<square.location.x + square.dimension.x + circle.radius && circle.location.x>square.dimension.x - circle.radius){//1
+      if(circle.location.y<square.location.y + square.dimension.y && circle.location.y> square.location.y){ //2
+        return true
+      }
+    }
+
+    if(circle.location.y<square.location.y + square.dimension.y+circle.radius && circle.location.y>square.dimension.y-circle.radius){//3
+      if(circle.location.x<square.location.x + square.dimension.x && circle.location.x> square.location.x){//4
+        return true
+      } 
+    }
+
+    let corner = [
+      {
+        x:square.location.x,
+        y:square.location.y
+      },
+      {
+        x:square.location.x+square.dimension.x,
+        y:square.location.y
+      },
+      {
+        x:square.location.x,
+        y:square.location.y+square.dimension.y
+      },
+      {
+        x:square.location.x+square.dimension.x,
+        y:square.location.y+square.dimension.y
+      }
+    ]
+    
+    for(let i = 0; i<corner.length;i++){
+      console.log(corner)
+      if(Math.pythagor(circle.location, corner[i])<Math.pow(circle.radius, 2)){
+        return true
+      }
+    }
+  }
+
+  doCollide(a,b){
+
+    if(a.collisionType == 'rect'){
+
+      if(b.collisionType == "rect"){
+        return Engine.engine.doSquareCollide(a,b)
+      }else if(b.collisionType == "circle"){
+        //a rect b circle
+        return Engine.engine.doRectAndCircleCollide(a,b)
+      }
+
+    }else if(a.collisionType == "circle"){
+      if(b.collisionType == "rect"){
+        //a circle b rect
+        return Engine.engine.doRectAndCircleCollide(b,a)
+      }else if(b.collisionType == "circle"){
+        //a circle b circle
+        return Engine.engine.doCircleCollide(a, b)
+      }
+    }
+  }
+
   static createEngine(){
     Engine.engine = new Engine()
 
@@ -108,5 +175,62 @@ class Engine{
   constructor(){
     this.oldTime = performance.now()
     this.newTime = this.oldTime
+  }
+
+
+  handleCollision(){
+    let entities = Engine.engine.entities
+    let player = Engine.engine.player
+
+    let collisionType = ["collisionReceiving", "collisionGiving"]
+    //player
+    for(let i =entities.length-1; i>=0; i--){
+      let tag = entities[i].collisionGiving.find(element => player.collisionReceiving.includes(element))
+      if(tag != undefined){
+        if(Engine.engine.doCollide(player, entities[i])){
+          player.onCollision(entities[i], {channel : tag})
+        }
+      }
+      for(let i =entities.length-1; i>=0; i--){
+        let tag = entities[i].collisionReceiving.find(element => player.collisionGiving.includes(element))
+        if(tag != undefined){
+          if(Engine.engine.doCollide(player, entities[i])){
+            entities[i].onCollision(player, {channel : tag})
+          }
+        }
+      }
+    }
+    //entities
+    for(let i = entities.length-1; i>=0; i--){
+      //Collide
+      let act = entities[i]
+      let sliced = entities.slice(0, i-entities.length)
+      console.log(i-entities.length-2)
+      for(let j = sliced.length-1; j>=0; j--){
+        console.log(Object.is(act, sliced[j]))
+        let doCollide = null
+        let tag = act.collisionGiving.find(element => sliced[j].collisionReceiving.includes(element))
+        if(tag!=undefined){
+          let doCollide = Engine.engine.doCollide(act, sliced[j])
+          if(doCollide){
+            sliced[j].onCollision()
+          }
+        }
+        if(doCollide ===false){
+          continue
+        }
+        tag = act.collisionReceiving.find(element => sliced[j].collisionGiving.includes(element))
+        if(tag!=undefined){
+          if(doCollide===null){
+            doCollide = Engine.engine.doCollide(act, sliced[j])
+            
+          }
+          if(doCollide){
+            
+            act.onCollision()
+          }
+        }
+      }
+    }
   }
 }

@@ -13,7 +13,9 @@ class Player{
     y:10
   }
   
-
+  collisionType = "rect"
+  collisionReceiving = ["player"]
+  collisionGiving = ["ennemy"]
 
   update(){
   let delta = Engine.engine.delta    
@@ -53,10 +55,6 @@ class Player{
       this.velocity.y = this.jumpSpeed
       //this.velocity.y *= -1
     }
-
-    if(this.detectCollision()){
-      Engine.engine.isGameRunning = false
-    }
   }
 
   draw(){
@@ -78,12 +76,16 @@ class Player{
     for(let i = 0; i<blocks.length; i++){
       let block = blocks[i]
 
-      let doCollide = Engine.engine.doSquareCollide(this, block)
+      let doCollide = Engine.engine.doCollide(this, block)
       if(doCollide){
         return true
       }
     
     }
     return false
+  }
+
+  onCollision(collider, data){//when receiving collision
+    Engine.engine.isGameRunning = false
   }
 }

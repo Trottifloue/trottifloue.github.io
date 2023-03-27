@@ -17,7 +17,12 @@ let direction = {
   },
 }
 
+
 class Block{
+  
+  collisionType = "rect"
+  collisionReceiving = ["ennemy", "player"]
+  collisionGiving = ["player"]
 
   static dimension = {
     x : 40,
@@ -131,7 +136,7 @@ class Block{
       location : location
     }
     for(let i = 0; i<entities.length;i++){
-      if(Engine.engine.doSquareCollide(futureObject, entities[i])){
+      if(Engine.engine.doCollide(futureObject, entities[i])){
         return true
       }
     }
@@ -202,4 +207,9 @@ class Block{
     Engine.engine.entities.push(this)
 
   }
+
+  onCollision(collider, data){
+    this.color = "yellow"
+  }
+
 }

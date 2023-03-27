@@ -3,12 +3,15 @@ class Spawner{
     location
     timeElapsed = 0
     totalTime
-    blinkingSpeed = 10
+    blinkingSpeed = 0.33
 
     dimension = {
       x:60,
       y:60
     }
+
+    collisionReceiving = []
+    collisionGiving = []
 
   constructor(_class, location, timer, dimension, ...parameters){
     this.totalTime = timer
@@ -17,7 +20,7 @@ class Spawner{
     this.parameters = [...parameters]
     this.dimension = dimension
 
-    Engine.engine.noCollision.push(this)
+    Engine.engine.entities.push(this)
   }
 
   update(){
@@ -25,8 +28,8 @@ class Spawner{
 
     if(this.timeElapsed>this.totalTime){
       new this._class(...this.parameters)
-      let index = Engine.engine.noCollision.indexOf(this)
-      Engine.engine.noCollision.splice(index, 1)
+      let index = Engine.engine.entities.indexOf(this)
+      Engine.engine.entities.splice(index, 1)
     }
   }
 
@@ -36,5 +39,9 @@ class Spawner{
     ctx.fillStyle = `rgba(0,0,0, ${Math.sin(this.timeElapsed*Math.PI* this.blinkingSpeed)})`
 
     ctx.fillRect(this.location.x, this.location.y, this.dimension.x,this.dimension.y)
+  }
+
+  onCollision(collider, data){
+    
   }
 }
