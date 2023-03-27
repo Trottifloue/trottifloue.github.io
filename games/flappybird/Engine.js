@@ -102,13 +102,13 @@ class Engine{
 
   doRectAndCircleCollide(square, circle){
     
-    if(circle.location.x<square.location.x + square.dimension.x + circle.radius && circle.location.x>square.dimension.x - circle.radius){//1
+    if(circle.location.x<square.location.x + square.dimension.x + circle.radius && circle.location.x>square.location.x - circle.radius){//1
       if(circle.location.y<square.location.y + square.dimension.y && circle.location.y> square.location.y){ //2
         return true
       }
     }
 
-    if(circle.location.y<square.location.y + square.dimension.y+circle.radius && circle.location.y>square.dimension.y-circle.radius){//3
+    if(circle.location.y<square.location.y + square.dimension.y+circle.radius && circle.location.y>square.location.y-circle.radius){//3
       if(circle.location.x<square.location.x + square.dimension.x && circle.location.x> square.location.x){//4
         return true
       } 
@@ -134,7 +134,6 @@ class Engine{
     ]
     
     for(let i = 0; i<corner.length;i++){
-      console.log(corner)
       if(Math.pythagor(circle.location, corner[i])<Math.pow(circle.radius, 2)){
         return true
       }
@@ -205,15 +204,13 @@ class Engine{
       //Collide
       let act = entities[i]
       let sliced = entities.slice(0, i-entities.length)
-      console.log(i-entities.length-2)
       for(let j = sliced.length-1; j>=0; j--){
-        console.log(Object.is(act, sliced[j]))
         let doCollide = null
         let tag = act.collisionGiving.find(element => sliced[j].collisionReceiving.includes(element))
         if(tag!=undefined){
           let doCollide = Engine.engine.doCollide(act, sliced[j])
           if(doCollide){
-            sliced[j].onCollision()
+            sliced[j].onCollision(act, {channel : tag})
           }
         }
         if(doCollide ===false){
@@ -227,7 +224,7 @@ class Engine{
           }
           if(doCollide){
             
-            act.onCollision()
+            act.onCollision(sliced[j], {channel : tag})
           }
         }
       }

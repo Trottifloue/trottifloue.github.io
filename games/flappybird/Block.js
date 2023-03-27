@@ -21,8 +21,8 @@ let direction = {
 class Block{
   
   collisionType = "rect"
-  collisionReceiving = ["ennemy", "player"]
-  collisionGiving = ["player"]
+  collisionReceiving = ["ennemy"]
+  collisionGiving = ["player", "defense"]
 
   static dimension = {
     x : 40,
@@ -209,7 +209,7 @@ class Block{
   }
 
   onCollision(collider, data){
-    this.color = "yellow"
+    console.log("test Block")
   }
 
 }

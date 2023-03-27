@@ -1,3 +1,7 @@
+//collision receiving = calque sur lesquels recois
+//collision giving = calque sur lesquels donne
+// un ennemy peut give "player" et le joueur peut recevoir "player". Aucun événement sera déclenché côté ennemy. Mais côté joueur, si.
+
 class Player{
   drawFct = null
   location = {x:0,y:0}
@@ -15,12 +19,30 @@ class Player{
   
   collisionType = "rect"
   collisionReceiving = ["player"]
-  collisionGiving = ["ennemy"]
+  collisionGiving = []
+
+  isDodgeSpawned = false
+  dodgeTimer = 0
+  dodgeTimerMax = 2
 
   update(){
   let delta = Engine.engine.delta    
   let a = Input.inputList.KeyA? Input.inputList.KeyA : 0
   let d = Input.inputList.KeyD? Input.inputList.KeyD : 0
+  let w = Input.inputList.KeyW? Input.inputList.KeyW : 0
+
+  if(!this.isDodgeSpawned){
+    if(w == 1){
+      new Shockwave(Engine.engine.player, 100, 0, 0.5)
+      this.isDodgeSpawned = true
+    }
+  }else{
+    this.dodgeTimer +=delta
+    if(this.dodgeTimer>this.dodgeTimerMax){
+      this.dodgeTimer = 0
+      this.isDodgeSpawned = false
+    }
+  }
 
   let xMove = d - a
 
