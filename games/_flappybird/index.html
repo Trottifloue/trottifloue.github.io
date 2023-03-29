@@ -14,7 +14,7 @@
 
     .canvas{
       position:absolute;
-      border: solid black 3px;
+      border: solid black;
     }
 
     .canvas-div{
@@ -39,30 +39,24 @@
       text-align: center;
       font-size: 48px;
     }
-
-    #hud{
-      width: 900px;
-      height: 900px;
-      position: absolute;
-      margin: 3px;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
+  <script src="Math.js"></script>
+  <script src="Input.js"></script>
+  <script src="Player.js"></script>
 
 
-  <script type="module">
-    import { Engine } from "./src/Engine.js"
-    document.getElementById("button").addEventListener("click", ()=>Engine.createEngine())
-    
-    import {updateMath} from "./src/Math.js"
-    updateMath()
-  </script>
+  <script src="Block.js"></script>
+    <script src="CosBlock.js"></script>
+  <script src="Spawner.js"></script>
+  
+  <script src="Shockwave.js"></script>
+
+  <script src="Engine.js"></script>
   <div width="900" height="900" class="canvas-div">
     <canvas class="canvas" width="900" height="900" id="canvas"></canvas>
-    <button class="button" id="button">Play</button>
-    <div id="hud"></div>
+    <button class="button" id="button" onclick="Engine.createEngine()">Play</button>
   </div>
 </body>
 </html>

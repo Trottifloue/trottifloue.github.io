@@ -48,17 +48,13 @@
       pointer-events: none;
     }
   </style>
+  <script type="module" crossorigin src="/assets/index-5c8c2327.js"></script>
+  <link rel="stylesheet" href="/assets/index-caf3e45d.css">
 </head>
 <body>
 
 
-  <script type="module">
-    import { Engine } from "./src/Engine.js"
-    document.getElementById("button").addEventListener("click", ()=>Engine.createEngine())
-    
-    import {updateMath} from "./src/Math.js"
-    updateMath()
-  </script>
+  
   <div width="900" height="900" class="canvas-div">
     <canvas class="canvas" width="900" height="900" id="canvas"></canvas>
     <button class="button" id="button">Play</button>
