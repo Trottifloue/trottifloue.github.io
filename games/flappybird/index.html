@@ -26,20 +26,6 @@
       transform: translate(-50%);
     }
 
-    .button{
-      position:absolute;
-      padding-left: 16px;
-      padding-right: 16px;
-      padding-top: 4px;
-      padding-bottom: 4px;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      top: 50%;
-
-      text-align: center;
-      font-size: 48px;
-    }
-
     #hud{
       width: 900px;
       height: 900px;
@@ -54,15 +40,19 @@
 
   <script type="module">
     import { Engine } from "./src/Engine.js"
-    document.getElementById("button").addEventListener("click", ()=>Engine.createEngine())
+    import { Hud } from "./src/hud.js"
     
     import {updateMath} from "./src/Math.js"
     updateMath()
+    new Hud()
+
+    new Engine()
   </script>
   <div width="900" height="900" class="canvas-div">
     <canvas class="canvas" width="900" height="900" id="canvas"></canvas>
-    <button class="button" id="button">Play</button>
     <div id="hud"></div>
   </div>
+
+  note : en cas d'erreur après le build, ajouter "./" dans les liens
 </body>
 </html>

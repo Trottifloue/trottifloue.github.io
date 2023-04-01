@@ -2,16 +2,52 @@ import { Player } from "./Player.js"
 import { Block } from "./Block.js"
 import { Ammo } from "./Ammo.js"
 import {Hud} from "./hud.js"
+import { PersistantData } from "./PersistantData.js"
+import { Shop } from "./Shop.js"
 
 export class Engine{
 
   canvas
   ctx
-  isGameRunning = true
-
-  character
-  entities = []
+  gameOver = false
+  get isGameOver (){return this.gameOver}
+  set isGameOver(value){
+    this.gameOver = value
+    Hud.getInstance().hud.engine.isGameOver = value
+  }
   
+  paused = false
+  get isPaused(){return this.paused}
+  set isPaused(value){
+    this.paused = value
+    Hud.getInstance().hud.engine.isPaused = value
+  }
+
+  run = false
+  get isRunning (){return this.run}
+  set isRunning(value){
+    this.run = value
+    Hud.getInstance().hud.engine.isRunning = value
+  }
+
+  shopOpen = false
+  get isShopOpen(){return this.shopOpen}
+  set isShopOpen(value){
+
+    this.shopOpen = value
+    Hud.getInstance().hud.engine.isShopOpen = value
+  }
+  
+
+  
+  entities = []
+  player
+  currentScore = 0
+  get score(){return this.currentScore}
+  set score(value){
+    this.currentScore = value
+    Hud.getInstance().hud.engine.score = value
+  }
 
   oldTime = 0
   newTime = 0
@@ -20,19 +56,13 @@ export class Engine{
   gravity = 400
 
   gameLoop(actualTime){
-    if(Engine.engine.isGameRunning){
     requestAnimationFrame(Engine.engine.gameLoop)
-    }else{
-      Engine.engine.gameOver()
-      Hud.deleteInstance()
-      return
-    }
-    
+
     Engine.engine.oldTime = Engine.engine.newTime
     Engine.engine.newTime  = actualTime
 
     Engine.engine.delta = (Engine.engine.newTime - Engine.engine.oldTime)/1000 
-
+    if(Engine.engine.isPaused || Engine.engine.isGameOver || ! Engine.engine.isRunning){return}
     Engine.engine.tick()
     Engine.engine.draw()
   }
@@ -75,28 +105,57 @@ export class Engine{
   }
   
   play(){
-    Engine.engine.canvas = document.getElementById("canvas")
-    Engine.engine.ctx = Engine.engine.canvas.getContext("2d")
-  
+
+    Engine.engine.entities = []
+
+    Engine.engine.oldTime = performance.now()
+    Engine.engine.newTime = Engine.engine.oldTime
+    Engine.engine.isGameOver = false
+
+    Engine.engine.score = 0
+
     let drawPlayer = function(){
-      Engine.engine.ctx.fillStyle = 'green'
+      Engine.engine.ctx.fillStyle = this.color
       Engine.engine.ctx.fillRect(this.location.x, this.location.y, this.dimension.x, this.dimension.y)
     }
-  
+    
     Engine.engine.player = new Player(drawPlayer, 150,150, 800, 1800, true)
+    let upgrades = Shop.getInstance().upgrade
+    console.log(upgrades)
+    let keys = Object.keys(upgrades)
+    for(let i = 0; i<keys.length;i++){
+      let upgrade = upgrades[keys[i]]
 
-    new Hud()
-    Engine.engine.gameLoop(performance.now())
+      if(upgrade.setup){upgrade.setup()}
+    }
+    Engine.engine.isRunning = true
   }
 
-  gameOver(){
-    let button = Engine.engine.canvas.parentNode.appendChild(document.createElement('button'))
-    button.classList.add("button")
-    button.innerHTML = `Game over,<br>retry ?`
-    button.id= "button"
-    button.addEventListener("click", function(){
-      Engine.createEngine()
-    })
+  pause(){
+    if(Engine.engine.isGameOver == true){return}
+    Engine.engine.isPaused = true
+    Engine.engine.oldTime = performance.now()
+    Engine.engine.newTime = Engine.engine.oldTime
+  }
+
+  resume(){
+    Engine.engine.oldTime = performance.now()
+    Engine.engine.newTime = Engine.engine.oldTime
+    Engine.engine.isPaused = false
+  }
+
+  makeGameOver(){
+    Engine.engine.isGameOver = true
+    PersistantData.getInstance().totalScore += Engine.engine.score
+
+  }
+
+  openShop(){
+    Engine.engine.isShopOpen = true
+  }
+
+  quitShop(){
+    Engine.engine.isShopOpen = false
   }
 
   doSquareCollide(a, b){
@@ -181,43 +240,30 @@ export class Engine{
     }
   }
 
-  static createEngine(){
-    Engine.engine = new Engine()
-
-    document.getElementById("button")?.remove()
-
-
+  static start(){
     Engine.engine.play()
   }
 
   constructor(){
+    Engine.engine = this
+
     this.oldTime = performance.now()
     this.newTime = this.oldTime
-  }
+    this.isRunning = false
 
+    Engine.engine.canvas = document.getElementById("canvas")
+    Engine.engine.ctx = Engine.engine.canvas.getContext("2d")
+    document.addEventListener("blur", (e)=>{Engine.engine.pause()})
+    document.addEventListener("focus", (e)=>{console.log("event not used now")})
+
+    this.gameLoop(this.newTime)
+  }
 
   handleCollision(){
     let entities = Engine.engine.entities
     let player = Engine.engine.player
 
-    let collisionType = ["collisionReceiving", "collisionGiving"]
-    //player
-    for(let i =entities.length-1; i>=0; i--){
-      let tag = entities[i].collisionGiving.find(element => player.collisionReceiving.includes(element))
-      if(tag != undefined){
-        if(Engine.engine.doCollide(player, entities[i])){
-          player.onCollision(entities[i], {channel : tag})
-        }
-      }
-      for(let i =entities.length-1; i>=0; i--){
-        let tag = entities[i].collisionReceiving.find(element => player.collisionGiving.includes(element))
-        if(tag != undefined){
-          if(Engine.engine.doCollide(player, entities[i])){
-            entities[i].onCollision(player, {channel : tag})
-          }
-        }
-      }
-    }
+
     //entities
     for(let i = entities.length-1; i>=0; i--){
       //Collide
@@ -244,6 +290,24 @@ export class Engine{
           if(doCollide){
             
             act.onCollision(sliced[j], {channel : tag})
+          }
+        }
+      }
+    }
+
+        //player
+    for(let i =entities.length-1; i>=0; i--){
+      let tag = entities[i].collisionGiving.find(element => player.collisionReceiving.includes(element))
+      if(tag != undefined){
+        if(Engine.engine.doCollide(player, entities[i])){
+          player.onCollision(entities[i], {channel : tag})
+        }
+      }
+      for(let i =entities.length-1; i>=0; i--){
+        let tag = entities[i].collisionReceiving.find(element => player.collisionGiving.includes(element))
+        if(tag != undefined){
+          if(Engine.engine.doCollide(player, entities[i])){
+            entities[i].onCollision(player, {channel : tag})
           }
         }
       }

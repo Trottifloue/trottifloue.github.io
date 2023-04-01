@@ -10,6 +10,7 @@ import { Hud } from "./hud.js"
 
 export class Player{
   drawFct = null
+  color = "green"
   location = {x:0,y:0}
   velocity = {x:0,y:0}
   maxSpeed = 0
@@ -69,7 +70,6 @@ export class Player{
 
   let xMove = d - a
 
-
     this.velocity.x += delta*this.acceleration*xMove
 
     if(xMove ==0){
@@ -113,6 +113,9 @@ export class Player{
     this.maxSpeed = maxSpeed
     this.acceleration = acceleration
     this.doMove = doMove
+
+    this.ammo = this.currentAmmo
+    this.maxAmmo = this.currentMaxAmmo
   }
 
   detectCollision(){
@@ -131,6 +134,7 @@ export class Player{
   }
 
   onCollision(collider, data){//when receiving collision
-    Engine.engine.isGameRunning = false
+    console.log(Engine.engine)
+    Engine.engine.makeGameOver()
   }
 }

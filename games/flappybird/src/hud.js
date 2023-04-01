@@ -1,14 +1,12 @@
-import { Engine } from "./Engine.js"
+
 import  { createApp }  from "vue"
-import test from "./components/_test.vue"
+import hud from "./components/hud.vue"
 
 export class Hud {
   constructor(){
     Hud.instance = this
-    this.app = createApp(test)
+    this.app = createApp(hud)
     this.hud = this.app.mount("#hud")
-
-    console.log(this.hud.player)
 
   }
 
@@ -18,5 +16,9 @@ export class Hud {
 
   static getInstance(){
     return Hud.instance
+  }
+
+  getData(){
+    
   }
 }

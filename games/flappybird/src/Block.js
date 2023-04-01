@@ -165,14 +165,19 @@ export class Block{
     let axis = ["x", "y"]
     let word = ["width", "height"]
     for(let i =0; i<axis.length; i++){
-      if(this.direction[axis[i]] == -1 && this.location[axis[i]] + this.dimension[axis[i]]<0){
+      if(this.direction[axis[i]] == 1 && this.location[axis[i]] + this.dimension[axis[i]]<0){
         let index = Engine.engine.entities.indexOf(this)
         Engine.engine.entities.splice(index, 1)
+        console.log("delete : ", this.direction)
         return
-      }else if(this.direction[axis[i]] == 1 && this.location[axis[i]]>Engine.engine.canvas[word[i]]){
+      }else if(this.direction[axis[i]] == -1 && this.location[axis[i]]>Engine.engine.canvas[word[i]]){
         let index = Engine.engine.entities.indexOf(this)
         Engine.engine.entities.splice(index, 1)
+        console.log("delete : ", this.direction)
         return
+      }
+      if(this.location.x>1000){
+        console.log(this.location.x, this.direction)
       }
     }
   }
