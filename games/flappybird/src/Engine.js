@@ -124,7 +124,7 @@ export class Engine{
       Engine.engine.ctx.fillRect(this.location.x, this.location.y, this.dimension.x, this.dimension.y)
     }
     
-    Engine.engine.player = new Player(drawPlayer, 150,150, 800, 180000, true)
+    Engine.engine.player = new Player(drawPlayer, 150,150, 800, 1800, true)
     let upgrades = Shop.getInstance().upgrade
     console.log(upgrades)
     let keys = Object.keys(upgrades)
