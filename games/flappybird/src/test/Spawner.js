@@ -1,4 +1,4 @@
-import { Engine } from "./Engine.js"
+import { Engine } from "../Engine.js"
 
 export class Spawner{
     _class
@@ -38,7 +38,7 @@ export class Spawner{
   draw(){
     let ctx = Engine.engine.ctx
 
-    ctx.fillStyle = `rgba(0,0,0, ${Math.sin(this.timeElapsed*Math.PI* this.blinkingSpeed)})`
+    ctx.fillStyle = `rgba(255,255,255,${Math.sin(this.timeElapsed*Math.PI* this.blinkingSpeed)})`
 
     ctx.fillRect(this.location.x, this.location.y, this.dimension.x,this.dimension.y)
   }

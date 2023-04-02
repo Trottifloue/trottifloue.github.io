@@ -1,9 +1,10 @@
 import { Player } from "./Player.js"
-import { Block } from "./Block.js"
+import { Block } from "./test/Block.js"
 import { Ammo } from "./Ammo.js"
 import {Hud} from "./hud.js"
 import { PersistantData } from "./PersistantData.js"
 import { Shop } from "./Shop.js"
+import { Level } from "./levels/Level.js"
 
 export class Engine{
 
@@ -49,6 +50,8 @@ export class Engine{
     Hud.getInstance().hud.engine.score = value
   }
 
+  level
+
   oldTime = 0
   newTime = 0
   delta
@@ -86,7 +89,7 @@ export class Engine{
       Engine.engine.entities[i].update()
     }
 
-    Block.spawn(Engine.engine.delta)
+    //Block.spawn(Engine.engine.delta)
 
     Engine.engine.handleCollision()
 
@@ -101,6 +104,8 @@ export class Engine{
       }
       new Ammo(location)
     }
+
+    Engine.engine.level.update()
     
   }
   
@@ -119,7 +124,7 @@ export class Engine{
       Engine.engine.ctx.fillRect(this.location.x, this.location.y, this.dimension.x, this.dimension.y)
     }
     
-    Engine.engine.player = new Player(drawPlayer, 150,150, 800, 1800, true)
+    Engine.engine.player = new Player(drawPlayer, 150,150, 800, 180000, true)
     let upgrades = Shop.getInstance().upgrade
     console.log(upgrades)
     let keys = Object.keys(upgrades)
@@ -128,11 +133,13 @@ export class Engine{
 
       if(upgrade.setup){upgrade.setup()}
     }
+
+    Engine.engine.level = new Level(0)
     Engine.engine.isRunning = true
   }
 
   pause(){
-    if(Engine.engine.isGameOver == true){return}
+    if(Engine.engine.isGameOver == true|| Engine.engine.isRunning === false){return}
     Engine.engine.isPaused = true
     Engine.engine.oldTime = performance.now()
     Engine.engine.newTime = Engine.engine.oldTime

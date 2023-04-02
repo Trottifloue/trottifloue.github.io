@@ -1,4 +1,4 @@
-import { Engine } from "./Engine.js"
+import { Engine } from "../Engine.js"
 import { Block } from "./Block.js"
 
 export class CosBlock extends Block{

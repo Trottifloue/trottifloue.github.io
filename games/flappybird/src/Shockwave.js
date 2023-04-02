@@ -61,6 +61,6 @@ export class Shockwave{
     let index = Engine.engine.entities.indexOf(collider)
     Engine.engine.entities.splice(index, 1)
 
-    Engine.engine.score++
+    Engine.engine.score+= collider.value
   }
 }
