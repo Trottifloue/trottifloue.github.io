@@ -135,6 +135,7 @@ export class Engine{
     }
 
     Engine.engine.level = new Level(0)
+    console.log("newLevel")
     Engine.engine.isRunning = true
   }
 

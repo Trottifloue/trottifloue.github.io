@@ -1,27 +1,5 @@
 import { Engine } from "../Engine.js"
 
-import { Spawner } from "./Spawner.js"
-
-let direction = {
-  Left : {
-    x:-1,
-    y:0
-  },
-  Right : {
-    x:1,
-    y:0
-  },
-  Down : {
-    x:0,
-    y:-1
-  },
-  Up : {
-    x:0,
-    y:1
-  },
-}
-
-
 export class Block{
   
   value = 10

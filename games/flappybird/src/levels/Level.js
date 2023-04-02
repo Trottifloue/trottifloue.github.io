@@ -1,7 +1,7 @@
 import { Engine } from "../Engine.js"
 import { Timestamp } from "./Timestamp.js"
 
-import Level1 from "./Level1.js"
+import {Level1} from "./Level1.js"
 
 let LevelList = [
   Level1
@@ -26,14 +26,9 @@ export class Level{
         break
       }
     }
-
-    if(this.list.length<1){
-      console.log("end")
-      
-    }
   }
 
   constructor(number){
-    this.list = LevelList[number]
+    this.list = new LevelList[number]().list
   }
 }
