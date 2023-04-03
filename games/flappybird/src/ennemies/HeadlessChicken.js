@@ -8,6 +8,11 @@ export class HeadlessChicken{
     y:null
   }
 
+  baseLocation = {
+    x:null,
+    y:null
+  }
+
   time = 0
 
   value = 1
@@ -39,9 +44,11 @@ export class HeadlessChicken{
   onCollision(collider, data){
   }
 
-  constructor(currentTime){
+  constructor(currentTime, baseLocation){
     this.timeCreated=currentTime
 
+    this.baseLocation.x = baseLocation.x
+    this.baseLocation.y = baseLocation.y
     Engine.engine.entities.push(this)
   }
 
