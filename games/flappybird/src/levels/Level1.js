@@ -5,6 +5,7 @@ import { CosBlock } from "../test/CosBlock.js"
 import { PaternBase } from "../ennemies/PaternBase.js"
 export class Level1{
     list = [
+      /*new Timestamp(0, [
         {class : Block, dataConstructor : [{x:40,y:120}, {x:-1, y:0}]}
       ]),
 
