@@ -2,36 +2,64 @@ import { Timestamp } from "./Timestamp.js"
 
 import { Block } from "../test/Block.js"
 import { CosBlock } from "../test/CosBlock.js"
-import { PaternBase } from "../ennemies/PaternBase.js"
+import { PaternBase } from "../ennemies/paterns/PaternBase.js"
 import paternList from "../ennemies/paterns/paternList.js"
+import { Rotator } from "../ennemies/paterns/Rotator.js"
+import { Shooter } from "../ennemies/shooter.js"
 
 export class Level1{
     list = [
+
+      new Timestamp(0.48, [
+        {
+          class: Shooter, dataConstructor : [
+            {x:0,y:0}, 
+            {
+              x:paternList.linear,
+              y:paternList.linear
+            }, 
+            {
+              x:[900, 10],
+              y:[900, 10]
+            }, 
+            1,
+            100
+          ]
+        }
+      ]),
+
+      new Timestamp(0.5, [
+        {
+          class: Rotator, dataConstructor : [
+            {x:400, y:400},
+            3,
+            20, 
+            0.25,
+            100,
+            50,
+            3
+          ]
+        }
+      ]),
       new Timestamp(1, [
-        {class : PaternBase, dataConstructor : [500, 
-          0.02, 
+        {class : PaternBase, dataConstructor : [20, 
+          0.25, 
           {
-            x : function(alpha){
-              return (1-alpha/5)*900
-            },
+            x : paternList.invrtLinear,
 
-            y : function(alpha){
-              return (1-alpha/5)*900}
-              //return (Math.pow(alpha/5, 2))*900}
+            y : paternList.static,
+
           },
-
-          {x:[],y:[]},
-          {x:0,y:0},
+          {x:[900, 5],y:[]},
+          {x:900,y:300},
           10,
           {
-            x:function(alpha){
-              return 100
-            },
+            x:paternList.static,
 
-            y: paternList.alternatePosition
+            y: paternList.waves
           },
 
-          {x:[], y:[4, 100, 0.5]}
+          {x:[], y:[200, 2]}
         ]}
       ]),
 

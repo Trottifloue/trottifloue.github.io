@@ -1,7 +1,7 @@
 //Patern = {x:Function, y:Function avec un argument}
 
-import { Engine } from "../Engine.js";
-import { HeadlessChicken } from "./HeadlessChicken.js";
+import { Engine } from "../../Engine.js";
+import { HeadlessChicken } from "../HeadlessChicken.js";
 
 export class PaternBase {
   time = 0
@@ -16,7 +16,8 @@ export class PaternBase {
   constructor(number, interval, patern, paternTweak, beginLocation, lifespan, metapatern, metapaternTweak){
     this.numberToSpawn = number
     this.interval = interval
-    this.location = beginLocation
+    this.base_location = {x:beginLocation.x, y:beginLocation.y}
+    this.location = {x:beginLocation.x, y:beginLocation.y}
 
     this.patern = patern
     this.paternTweak = paternTweak? paternTweak: []
@@ -34,9 +35,8 @@ export class PaternBase {
     this.timeSinceLast+=delta
 
     if(this.metapatern !== undefined){
-      this.location.x = this.metapatern.x(...this.metapaternTweak.x, this.time)
-      this.location.y = this.metapatern.y(...this.metapaternTweak.y, this.time)
-      console.log(this.monitored)
+      this.location.x = this.metapatern.x(...this.metapaternTweak.x, this.time) +this.base_location.x
+      this.location.y = this.metapatern.y(...this.metapaternTweak.y, this.time) + this.base_location.y
     }
 
     if(this.timeSinceLast>this.interval && this.numberToSpawn>0){
@@ -60,9 +60,12 @@ export class PaternBase {
     if(this.time-chicken.timeCreated>this.chickenLifespan){
       let index = Engine.engine.entities.indexOf(chicken)
       let index2 = this.monitored.indexOf(chicken)
-  
-      Engine.engine.entities.splice(index, 1)
-      this.monitored.splice(index2, 1)
+      if(index>=0){
+        Engine.engine.entities.splice(index, 1)
+      }
+      if(index2>=0){
+        this.monitored.splice(index2, 1)
+      }
     }
   }
 

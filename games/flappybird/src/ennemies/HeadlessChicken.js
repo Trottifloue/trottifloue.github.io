@@ -49,6 +49,8 @@ export class HeadlessChicken{
 
     this.baseLocation.x = baseLocation.x
     this.baseLocation.y = baseLocation.y
+    this.location.x = baseLocation.x
+    this.location.y = baseLocation.y
     Engine.engine.entities.push(this)
   }
 
