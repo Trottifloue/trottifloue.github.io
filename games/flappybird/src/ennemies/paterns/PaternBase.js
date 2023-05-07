@@ -58,18 +58,18 @@ export class PaternBase {
     chicken.location.x = chicken.baseLocation.x + this.patern.x(...this.paternTweak.x ,this.time- chicken.timeCreated)
     chicken.location.y = chicken.baseLocation.y + this.patern.y(...this.paternTweak.y ,this.time- chicken.timeCreated)
     if(this.time-chicken.timeCreated>this.chickenLifespan){
-      let index = Engine.engine.entities.indexOf(chicken)
-      let index2 = this.monitored.indexOf(chicken)
-      if(index>=0){
-        Engine.engine.entities.splice(index, 1)
-      }
-      if(index2>=0){
-        this.monitored.splice(index2, 1)
-      }
+      this.delete(chicken)
     }
   }
 
   onCollision(collider, data){
     return
+  }
+
+  delete(chicken){
+    Engine.engine.delete(chicken)
+    let index = this.monitored.indexOf(chicken)
+    if(index<0){return}
+    this.monitored.splice(index, 1)
   }
 }

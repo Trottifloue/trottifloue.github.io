@@ -12,12 +12,14 @@ export class Rotator{
   collisionGiving = []
   radius = 0  
 
-  constructor(location, lineNumber, degreesRotation, frequencies, totalNumber, speed, lifespan)
+  onDeleting = false
+
+  constructor(location, lineNumber, degreesRotation, frequencies, duration, speed, lifespan)
   {
     this.location = location
     this.lineNumber = lineNumber
     this.frequencies = frequencies
-    this.totalNumber = totalNumber
+    this.duration = duration
     this.rotation = (degreesRotation/180)*Math.PI
     this.speed = speed
     this.lifespan = lifespan
@@ -35,7 +37,7 @@ export class Rotator{
     this.time += Engine.engine.delta
     this.timeSinceLast += Engine.engine.delta
 
-    if(this.timeSinceLast>this.frequencies)
+    if(this.timeSinceLast>this.frequencies && this.onDeleting == false)
     {
       console.log("spawn")
       this.timeSinceLast-=this.frequencies
@@ -54,6 +56,14 @@ export class Rotator{
       }
     }
     this.moveMonitored()
+
+    if(this.duration<this.time){
+      this.onDeleting = true
+
+      if(this.monitored.length ==0){
+        Engine.engine.delete(this)
+      }
+    }
 
   }
 

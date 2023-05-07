@@ -321,4 +321,10 @@ export class Engine{
       }
     }
   }
+
+  delete(lmn){
+    let index = Engine.engine.entities.indexOf(lmn)
+    if(index <0){return}
+    Engine.engine.entities.splice(index, 1)
+  }
 }

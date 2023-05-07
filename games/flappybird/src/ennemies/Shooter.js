@@ -18,6 +18,10 @@ export class Shooter
   baseLocation = {}
   location = {}
   
+  value = 5
+  isDeleting = false
+
+
   constructor(location, paterns, dataPaterns, frequencies, speed)
   {
 
@@ -40,6 +44,7 @@ export class Shooter
     this.target = Engine.engine.player
 
     Engine.engine.entities.push(this)
+
   }
 
   update()
@@ -76,6 +81,8 @@ export class Shooter
 
     }
     this.moveMonitored()
+    
+    //this.tryToDelete()
   }
 
   moveMonitored()
